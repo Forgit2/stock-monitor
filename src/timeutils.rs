@@ -2,11 +2,13 @@
 //!
 //! 判断交易时间段和特殊时间节点
 
-use chrono::{DateTime, TimeZone, Timelike, Weekday, Datelike};
+use chrono::{Timelike, Datelike};
+pub use chrono::DateTime;
+
+const SHANGHAI_OFFSET: i32 = 8 * 3600; // +08:00
 
 /// 使用 Asia/Shanghai 时区
 pub type TzShanghai = chrono::FixedOffset;
-const SHANGHAI_OFFSET: i32 = 8 * 3600; // +08:00
 
 /// 获取 Asia/Shanghai 时区的当前时间
 pub fn now_in_shanghai() -> DateTime<TzShanghai> {
@@ -16,9 +18,9 @@ pub fn now_in_shanghai() -> DateTime<TzShanghai> {
 
 /// 判断指定时间是否为交易日（周一~周五）
 pub fn is_trading_day(dt: DateTime<TzShanghai>) -> bool {
-    let weekday: Weekday = dt.weekday();
+    let weekday: chrono::Weekday = dt.weekday();
     // 周六和周日不是交易日
-    weekday != Weekday::Sat && weekday != Weekday::Sun
+    weekday != chrono::Weekday::Sat && weekday != chrono::Weekday::Sun
 }
 
 /// 判断指定时间是否在交易时间段
@@ -30,7 +32,7 @@ pub fn is_trading_time(dt: DateTime<TzShanghai>) -> bool {
     // 上午: 9:30 - 11:30
     let is_morning = (hour == 9 && minute >= 30) || (hour >= 10 && hour < 11) || (hour == 11 && minute <= 30);
     // 下午: 13:00 - 15:00
-    let is_afternoon = (hour >= 13 && hour < 15);
+    let is_afternoon = hour >= 13 && hour < 15;
 
     is_morning || is_afternoon
 }

@@ -2,6 +2,8 @@
 //!
 //! 定义所有核心数据结构
 
+use serde::{Deserialize, Serialize};
+
 /// 股票基础信息
 #[derive(Debug, Clone)]
 pub struct Stock {
@@ -50,7 +52,7 @@ impl Quote {
 }
 
 /// 告警记录
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Alert {
     /// Unix 时间戳
     pub timestamp: i64,
@@ -85,7 +87,7 @@ impl std::fmt::Display for AlertType {
 }
 
 /// 异动方向
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Direction {
     /// 上涨
     Up,
@@ -101,5 +103,3 @@ impl std::fmt::Display for Direction {
         }
     }
 }
-
-use serde::{Serialize, Deserialize};

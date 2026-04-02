@@ -24,7 +24,7 @@ pub async fn fetch_quote(code: &str) -> Result<Quote, FetchError> {
         .timeout(std::time::Duration::from_secs(10))
         .build()?;
 
-    let mut resp = client.get(&url).send().await?;
+    let resp = client.get(&url).send().await?;
     let bytes = resp.bytes().await?;
 
     // 新浪 API 返回 GBK 编码

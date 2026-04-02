@@ -1,5 +1,5 @@
 use stock_monitor::timeutils::{
-    is_before_market_open, is_market_close, is_trading_day, is_trading_time, now_in_shanghai,
+    is_before_market_open, is_market_close, is_trading_day, is_trading_time,
     TzShanghai,
 };
 use chrono::TimeZone;

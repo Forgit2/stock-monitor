@@ -2,7 +2,7 @@
 //!
 //! 管理告警记录的持久化和去重逻辑
 
-use crate::models::{Alert, AlertType, Direction};
+use crate::models::{Alert, Direction};
 use std::collections::HashMap;
 use std::fs::{self, File, OpenOptions};
 use std::io::{BufReader, BufWriter, Write};

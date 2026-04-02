@@ -103,14 +103,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     // 确保日志目录存在
-    fs::create_dir_all(&log_dir)?;
+    fs::create_dir_all(&log_dir).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
 
     // 初始化告警存储
     let alert_store = match AlertStore::new(&log_dir, config.retention_days) {
         Ok(store) => store,
         Err(e) => {
             tracing::error!(error = ?e, "告警存储初始化失败");
-            return Err(Box::new(e));
+            return Err(Box::new(e) as Box<dyn std::error::Error>);
         }
     };
 

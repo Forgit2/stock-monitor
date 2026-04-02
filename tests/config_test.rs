@@ -42,8 +42,7 @@ poll_interval = 300
     let mut file = NamedTempFile::new().unwrap();
     file.write_all(content.as_bytes()).unwrap();
 
-    let config = Config::load(file.path().to_str().unwrap()).unwrap();
-    let result = config.validate();
+    let result = Config::load(file.path().to_str().unwrap());
     assert!(result.is_err());
 }
 
@@ -57,8 +56,7 @@ poll_interval = 5000
     let mut file = NamedTempFile::new().unwrap();
     file.write_all(content.as_bytes()).unwrap();
 
-    let config = Config::load(file.path().to_str().unwrap()).unwrap();
-    let result = config.validate();
+    let result = Config::load(file.path().to_str().unwrap());
     assert!(result.is_err());
 }
 
@@ -72,8 +70,7 @@ poll_interval = 300
     let mut file = NamedTempFile::new().unwrap();
     file.write_all(content.as_bytes()).unwrap();
 
-    let config = Config::load(file.path().to_str().unwrap()).unwrap();
-    let result = config.validate();
+    let result = Config::load(file.path().to_str().unwrap());
     assert!(result.is_err());
 }
 

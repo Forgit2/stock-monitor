@@ -3,7 +3,7 @@
 //! 发送飞书机器人消息
 
 use crate::models::{Alert, AlertType};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -42,19 +42,17 @@ struct FeishuText {
 /// 发送飞书告警通知
 pub fn send_alert(webhook: &str, alert: &Alert) {
     let title = match alert.alert_type {
-        AlertType::Normal => "⚠️ 个股异动告警",
-        AlertType::Open => "🚀 开盘异动告警",
+        AlertType::Normal => "Stock Alert",
+        AlertType::Open => "Opening Alert",
     };
 
     let template = "red";
-    let direction_symbol = if alert.change_percent >= 0.0 { "+" } else { "" };
 
     let content = format!(
-        "**股票名称**：{}（{})\n**当前价**：{:.2f} 元\n**涨跌幅**：{}{:.2f}%\n**异动时间**：{}",
+        "Stock: {} ({})\nPrice: {:.2}\nChange: {:+.2}%\nTime: {}",
         alert.stock_name,
         alert.stock_code,
         alert.price,
-        direction_symbol,
         alert.change_percent,
         format_timestamp(alert.timestamp)
     );
@@ -79,12 +77,13 @@ pub fn send_alert(webhook: &str, alert: &Alert) {
     // 发送请求，不阻塞调用方
     let webhook = webhook.to_string();
     let card_clone = card;
+    let stock_code = alert.stock_code.clone();
 
     std::thread::spawn(move || {
         if let Err(e) = send_card_sync(&webhook, &card_clone) {
             tracing::error!(error = ?e, "发送飞书通知失败");
         } else {
-            tracing::info!(code = %alert.stock_code, "飞书通知已发送");
+            tracing::info!(code = %stock_code, "飞书通知已发送");
         }
     });
 }
@@ -95,17 +94,19 @@ fn send_card_sync(webhook: &str, card: &FeishuCard) -> Result<(), NotifyError> {
         .timeout(std::time::Duration::from_secs(10))
         .build()?;
 
+    let json_body = serde_json::to_string(card).map_err(|e| NotifyError::BuildError(e.to_string()))?;
+
     let response = client
         .post(webhook)
         .header("Content-Type", "application/json")
-        .json(card)
+        .body(json_body)
         .send()?;
 
     if response.status().is_success() {
         Ok(())
     } else {
         Err(NotifyError::BuildError(format!(
-            "HTTP错误: {}",
+            "HTTP error: {}",
             response.status()
         )))
     }
@@ -124,8 +125,8 @@ mod tests {
 
     #[test]
     fn test_format_timestamp() {
-        let ts = 1743569400; // 2026-04-02 10:30:00
+        let ts = 1775097000; // 2026-04-02 10:30:00 Shanghai
         let formatted = format_timestamp(ts);
-        assert!(formatted.contains("2026"));
+        assert!(formatted.contains("2026-04-02"));
     }
 }
