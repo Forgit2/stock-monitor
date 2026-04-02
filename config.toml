@@ -1,0 +1,9 @@
+stock_list = ["sh603667", "sz002050", "sh600580", "sz002896"]
+index_code = "sh000001"
+index_threshold = 1.0
+stock_threshold = 3.0
+open_threshold = 2.0
+poll_interval = 300
+feishu_webhook = "https://open.feishu.cn/open-apis/bot/v2/hook/f422ffbd-8754-4bba-b992-2e25abc14750"
+retention_days = 7
+log_dir = "logs"

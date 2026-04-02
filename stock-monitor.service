@@ -1,0 +1,16 @@
+[Unit]
+Description=Stock Monitor Service
+After=network.target
+
+[Service]
+Type=simple
+User=wy
+WorkingDirectory=/home/wy/workspace/team/output/stock-monitor
+ExecStart=/home/wy/workspace/team/output/stock-monitor/target/release/stock-monitor
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
